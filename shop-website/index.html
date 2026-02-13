@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านค้าสุดเท่ 🔥</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Kanit', sans-serif; background: linear-gradient(to bottom, #000, #330000); color: #fff; min-height: 100vh; overflow-x: hidden; }
+        header { background: #000; padding: 15px; display: flex; justify-content: space-around; align-items: center; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 20px rgba(255,0,0,0.7); }
+        #shop-logo { height: 60px; width: 60px; border-radius: 50%; border: 3px solid #ff0000; object-fit: cover; }
+        #hamburger { font-size: 35px; cursor: pointer; }
+        #cart-icon { font-size: 35px; cursor: pointer; position: relative; }
+        #cart-badge { position: absolute; top: -10px; right: -10px; background: #ff0000; color: #fff; border-radius: 50%; padding: 5px 10px; font-size: 14px; font-weight: bold; }
+        #menu { position: fixed; top: 70px; left: -280px; width: 280px; height: calc(100% - 70px); background: rgba(0,0,0,0.95); transition: left 0.3s; z-index: 999; padding: 20px; box-shadow: 5px 0 15px rgba(255,0,0,0.6); }
+        #menu.show { left: 0; }
+        #menu ul { list-style: none; padding: 0; margin: 0; }
+        #menu li { padding: 20px; border-bottom: 1px solid #ff0000; cursor: pointer; font-size: 18px; transition: 0.3s; }
+        #menu li:hover { background: rgba(255,0,0,0.3); }
+        .page { display: none; padding: 90px 20px 20px; }
+        .page.active { display: block; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 10px; }
+        .product-card { background: rgba(255,255,255,0.1); border-radius: 15px; overflow: hidden; text-align: center; box-shadow: 0 5px 15px rgba(255,0,0,0.5); transition: 0.3s; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(255,0,0,0.7); }
+        .product-card img { width: 100%; height: 160px; object-fit: cover; }
+        .product-card h3 { margin: 10px; font-size: 18px; }
+        .product-card p { color: #ff6666; font-weight: bold; }
+        .product-card input[type="checkbox"] { transform: scale(1.5); margin: 10px; }
+        .product-card input[type="number"] { width: 60px; padding: 8px; border-radius: 5px; border: none; background: #333; color: #fff; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1001; padding: 10px; box-sizing: border-box; }
+        .modal.show { display: flex; }
+        .modal-content { background: #111; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; border: 3px solid #ff0000; text-align: center; }
+        button { background: #ff0000; color: #fff; border: none; padding: 12px 25px; margin: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        button:hover { background: #cc0000; }
+        .btn-add { background: #ff0000; padding: 15px 30px; font-size: 18px; }
+        .btn-full { width: 100%; padding: 15px; font-size: 18px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #333; color: #fff; box-sizing: border-box; }
+        #qr-section img { width: 80%; max-width: 250px; margin: 20px 0; border: 3px solid #ff0000; border-radius: 10px; }
+        .title-center { text-align:center; font-size:28px; text-shadow: 0 0 10px red; }
+        .divider { border-color:#ff0000; }
+        .preview-img { width:120px; margin:10px; border-radius:50%; border:3px solid red; }
+        .payment-container { text-align:left; max-width:400px; margin:0 auto; padding: 0 10px; }
+        .total-text { font-size:20px; }
+        .price-highlight { color:#ff0000; }
+        .success-title { color:#00ff00; }
+        .order-highlight { color:#ff0000; font-size:24px; }
+        .btn-copy { background: #ff0000; color: #fff; border: none; padding: 8px 15px; margin-left: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+        .btn-copy:hover { background: #cc0000; }
+        #bank-details p { margin: 15px 0; }
+        @media (max-width: 768px) {
+            header { padding: 10px; }
+            #shop-logo { height: 50px; width: 50px; }
+            #hamburger, #cart-icon { font-size: 30px; }
+            .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .product-card img { height: 120px; }
+            .product-card h3 { font-size: 16px; }
+            .product-card input[type="number"] { width: 50px; padding: 6px; }
+            .modal-content { padding: 20px; width: 95%; }
+            button { padding: 10px 20px; font-size: 16px; }
+            .title-center { font-size: 24px; }
+            #menu { width: 250px; top: 60px; height: calc(100% - 60px); }
+            #menu li { padding: 15px; font-size: 16px; }
+            input, textarea { padding: 10px; font-size: 16px; }
+            .payment-container { max-width: 100%; padding: 0 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div id="hamburger">&#9776;</div>
+    <img id="shop-logo" src="https://i.ibb.co/4Z0cMGYR/2-20260209-040714-0001.png " "โลโก้ร้าน">
+    <div id="cart-icon">🛒<span id="cart-badge">0</span></div>
+</header>
+
+<div id="menu">
+    <ul>
+        <li onclick="goBack()">ย้อนกลับ</li>
+        <li onclick="showPage('home')">หน้าแรก</li>
+        <li onclick="showBankInfo()">เลขบัญชีธนาคาร</li>
+        <li onclick="enterAdmin()">จัดการร้าน (Admin)</li>
+    </ul>
+</div>
+
+<div id="home" class="page active">
+    <h1 class="title-center">สินค้าทั้งหมด 🔥</h1>
+    <div class="products-grid" id="products-grid"></div>
+</div>
+
+<div id="admin-page" class="page">
+    <h1 class="title-center">จัดการร้าน (Admin)</h1>
+    <button class="btn-add" onclick="addProduct()">➕ เพิ่มสินค้าใหม่</button>
+    <div id="admin-products"></div>
+    <hr class="divider">
+    <h2>ตั้งค่าร้าน</h2>
+    <p>รูปโปรไฟล์ร้าน</p>
+    <input type="file" id="shop-logo-input" accept="image/*"><br>
+    <img id="shop-logo-preview" src="" alt="Preview" class="preview-img"><br>
+    <button onclick="saveShopLogo()">บันทึกโลโก้</button>
+
+    <p>รูป QR Code ชำระเงิน</p>
+    <input type="file" id="qr-input" accept="image/*"><br>
+    <img id="qr-preview" src="" alt="Preview" class="preview-img"><br>
+    <button onclick="saveQR()">บันทึก QR</button>
+
+    <h2>ตั้งค่าเลขบัญชีธนาคาร</h2>
+    <p>เลขที่บัญชี</p>
+    <input type="text" id="bank-number" placeholder="เช่น 415-047-2070"><br>
+    <p>ชื่อเจ้าของบัญชี</p>
+    <input type="text" id="bank-owner" placeholder="เช่น ธนพล บุดารมย์"><br>
+    <p>ธนาคาร</p>
+    <input type="text" id="bank-name" placeholder="เช่น ไทยพาณิชย์"><br>
+    <button onclick="saveBank()">บันทึกข้อมูลบัญชี</button>
+</div>
+
+<div id="payment-page" class="page">
+    <h1 class="title-center">ชำระเงิน</h1>
+    <div class="payment-container">
+        <label><input type="radio" name="payment" value="cod"> เก็บเงินปลายทาง (COD)</label><br><br>
+        <label><input type="radio" name="payment" value="qr"> ชำระผ่าน QR Code</label><br><br>
+        <div id="qr-section" style="display:none;">
+            <p class="total-text">ยอดชำระทั้งหมด: <span id="payment-total" class="price-highlight">0</span> บาท</p>
+            <img id="shop-qr" src="https://via.placeholder.com/250?text=QR+Code" alt="QR Code">
+            <p>สแกน QR เพื่อชำระเงินผ่านแอปธนาคาร</p>
+        </div>
+        <button class="btn-full" onclick="completeOrder()">ชำระเงินสำเร็จ</button>
+    </div>
+</div>
+
+<div id="cart-modal" class="modal"><div class="modal-content">
+    <h2>ตะกร้าสินค้า 🛒</h2>
+    <div id="cart-items"></div>
+    <p class="total-text">ยอดรวม: <span id="cart-total">0</span> บาท</p>
+    <button onclick="checkout()">ยืนยันออเดอร์</button>
+    <button onclick="closeModal('cart-modal')">ปิด</button>
+</div></div>
+
+<div id="checkout-modal" class="modal"><div class="modal-content">
+    <h2>กรอกข้อมูลจัดส่ง</h2>
+    <input type="text" id="customer-name" placeholder="ชื่อเล่น"><br>
+    <input type="text" id="customer-address" placeholder="ที่อยู่ (เช่น ซอย1 ตำบล... อำเภอ... จังหวัด...)"><br>
+    <input type="text" id="customer-phone" placeholder="เบอร์โทรศัพท์"><br>
+    <button onclick="goToPayment()">ถัดไป ➜</button>
+</div></div>
+
+<div id="success-modal" class="modal"><div class="modal-content">
+    <h2 class="success-title">สำเร็จ! 🎉</h2>
+    <p>หมายเลขคำสั่งซื้อ: <span id="order-id" class="order-highlight"></span></p>
+    <p>รอการจัดส่งนะครับ 🔥</p>
+    <button onclick="closeModal('success-modal'); clearCart(); showPage('home')">กลับหน้าแรก</button>
+</div></div>
+
+<div id="bank-modal" class="modal"><div class="modal-content">
+    <h2>เลขบัญชีธนาคารสำหรับโอนเงิน</h2>
+    <div id="bank-details" style="text-align:center;">
+        <img src="https://upload.wikimedia.org/wikipedia/th/thumb/4/4f/SCB_Logo.svg/800px-SCB_Logo.svg.png" alt="โลโก้ไทยพาณิชย์" style="width:200px; margin-bottom:20px;">
+        <div style="text-align:left; font-size:18px; line-height:2; display:inline-block;">
+            <p>ธนาคาร: <strong id="bank-name-display"></strong></p>
+            <p>ชื่อบัญชี: <strong id="bank-owner-display"></strong></p>
+            <p>เลขที่บัญชี: <strong id="bank-number-display"></strong>
+                <button class="btn-copy" onclick="copyBankNumber()">คัดลอกเลข</button>
+            </p>
+        </div>
+    </div>
+    <button class="btn-full" onclick="closeModal('bank-modal')">ปิด</button>
+</div></div>
+
+<script>
+    const LINE_TOKEN = 'ใส่ Line Notify Token ของคุณที่นี่';
+
+    let cart = JSON.parse(localStorage.getItem('cart') || '{}');
+    let products = JSON.parse(localStorage.getItem('products') || '[]');
+    let shopInfo = JSON.parse(localStorage.getItem('shopInfo') || '{}');
+    let orders = JSON.parse(localStorage.getItem('orders') || '[]');
+
+    // ข้อมูลเริ่มต้นสินค้า
+    if (products.length === 0) {
+        products = [
+            {id: 1, name: 'สินค้าตัวอย่าง #1', price: 199, image: 'https://via.placeholder.com/300/ff0000/000000?text=สินค้า1'},
+            {id: 2, name: 'สินค้าตัวอย่าง #2', price: 299, image: 'https://via.placeholder.com/300/ff0000/000000?text=สินค้า2'},
+            {id: 3, name: 'สินค้าตัวอย่าง #3', price: 499, image: 'https://via.placeholder.com/300/ff0000/000000?text=สินค้า3'}
+        ];
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    // Default ร้าน + บัญชีพี่ AA
+    if (!shopInfo.logo) shopInfo.logo = 'https://via.placeholder.com/60/ff0000/000000?text=LOGO';
+    if (!shopInfo.qr) shopInfo.qr = 'https://via.placeholder.com/250?text=QR+Code';
+    if (!shopInfo.bankName || !shopInfo.bankOwner || !shopInfo.bankNumber) {
+        shopInfo.bankName = 'ไทยพาณิชย์';
+        shopInfo.bankOwner = 'ธนพล บุดารมย์';
+        shopInfo.bankNumber = '415-047-2070';
+    }
+    localStorage.setItem('shopInfo', JSON.stringify(shopInfo));
+
+    // โหลดข้อมูล
+    document.getElementById('shop-logo').src = shopInfo.logo;
+    document.getElementById('shop-qr').src = shopInfo.qr;
+
+    function updateCartBadge() {
+        const count = Object.values(cart).reduce((sum, q) => sum + q, 0);
+        document.getElementById('cart-badge').innerText = count;
+    }
+
+    function loadProducts() {
+        const grid = document.getElementById('products-grid');
+        grid.innerHTML = '';
+        products.forEach(p => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <img src="${p.image}" alt="${p.name}">
+                <h3>${p.name}</h3>
+                <p>${p.price} บาท</p>
+                <label><input type="checkbox" onchange="toggleCart(${p.id}, this.checked)" ${cart[p.id] ? 'checked' : ''}> เลือก</label>
+                <input type="number" min="1" value="${cart[p.id] || 1}" onchange="updateQuantity(${p.id}, this.value)" ${cart[p.id] ? '' : 'disabled'}>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function toggleCart(id, checked) {
+        if (checked) cart[id] = cart[id] || 1;
+        else delete cart[id];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+        loadProducts();
+    }
+
+    function updateQuantity(id, qty) {
+        qty = parseInt(qty) || 0;
+        if (qty > 0) cart[id] = qty;
+        else delete cart[id];
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+    }
+
+    function showCart() {
+        const itemsDiv = document.getElementById('cart-items');
+        itemsDiv.innerHTML = '';
+        let total = 0;
+        for (let id in cart) {
+            const p = products.find(pr => pr.id == id);
+            if (p) {
+                const sub = p.price * cart[id];
+                total += sub;
+                itemsDiv.innerHTML += `<p>${p.name} × ${cart[id]} = ${sub} บาท</p>`;
+            }
+        }
+        document.getElementById('cart-total').innerText = total;
+        document.getElementById('cart-modal').classList.add('show');
+    }
+
+    let currentOrder = {items: {}, total: 0, customer: {}, payment: ''};
+
+    function checkout() {
+        closeModal('cart-modal');
+        document.getElementById('checkout-modal').classList.add('show');
+    }
+
+    function goToPayment() {
+        const name = document.getElementById('customer-name').value.trim();
+        const address = document.getElementById('customer-address').value.trim();
+        const phone = document.getElementById('customer-phone').value.trim();
+        if (!name || !address || !phone) return alert('กรุณากรอกข้อมูลให้ครบครับ!');
+        currentOrder.customer = {name, address, phone};
+        currentOrder.items = {...cart};
+        currentOrder.total = parseInt(document.getElementById('cart-total').innerText) || 0;
+        closeModal('checkout-modal');
+        showPage('payment-page');
+        document.getElementById('payment-total').innerText = currentOrder.total;
+        document.querySelectorAll('input[name="payment"]').forEach(r => {
+            r.onchange = () => {
+                currentOrder.payment = r.value;
+                document.getElementById('qr-section').style.display = r.value === 'qr' ? 'block' : 'none';
+            };
+        });
+    }
+
+    function completeOrder() {
+        if (!currentOrder.payment) return alert('กรุณาเลือกวิธีชำระเงิน');
+        const orderId = Date.now();
+        const order = {id: orderId, ...currentOrder, date: new Date().toLocaleString('th-TH')};
+        orders.push(order);
+        localStorage.setItem('orders', JSON.stringify(orders));
+
+        if (LINE_TOKEN && LINE_TOKEN !== 'ใส่ Line Notify Token ของคุณที่นี่') {
+            let msg = `🔥 มีออเดอร์ใหม่!\nหมายเลข: ${orderId}\nชื่อ: ${order.customer.name}\nที่อยู่: ${order.customer.address}\nโทร: ${order.customer.phone}\nยอด: ${order.total} บาท\nวิธีชำระ: ${order.payment === 'cod' ? 'เก็บเงินปลายทาง' : 'QR Code'}\nรายการ:\n`;
+            for (let id in order.items) {
+                const p = products.find(pr => pr.id == id);
+                msg += `• ${p.name} × ${order.items[id]}\n`;
+            }
+            fetch('https://notify-api.line.me/api/notify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Bearer ' + LINE_TOKEN
+                },
+                body: 'message=' + encodeURIComponent(msg)
+            }).catch(() => {});
+        }
+
+        document.getElementById('order-id').innerText = orderId;
+        document.getElementById('success-modal').classList.add('show');
+    }
+
+    function clearCart() {
+        cart = {};
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartBadge();
+        loadProducts();
+    }
+
+    function showPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        closeMenu();
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
+    }
+
+    function goBack() {
+        history.back();
+        closeMenu();
+    }
+
+    function showBankInfo() {
+        updateBankDisplay();
+        document.getElementById('bank-modal').classList.add('show');
+        closeMenu();
+    }
+
+    function updateBankDisplay() {
+        document.getElementById('bank-name-display').innerText = shopInfo.bankName || 'ยังไม่ได้ตั้งค่า';
+        document.getElementById('bank-owner-display').innerText = shopInfo.bankOwner || 'ยังไม่ได้ตั้งค่า';
+        document.getElementById('bank-number-display').innerText = shopInfo.bankNumber || 'ยังไม่ได้ตั้งค่า';
+    }
+
+    function copyBankNumber() {
+        if (shopInfo.bankNumber) {
+            navigator.clipboard.writeText(shopInfo.bankNumber)
+                .then(() => alert('คัดลอกเลขบัญชีแล้วครับ! 🔥'))
+                .catch(() => alert('คัดลอกไม่ได้ ลองกดค้างเลขบัญชีแล้วคัดลอกเองนะครับ'));
+        } else {
+            alert('ยังไม่ได้ตั้งค่าเลขบัญชีครับ');
+        }
+    }
+
+    function closeMenu() {
+        document.getElementById('menu').classList.remove('show');
+    }
+
+    function enterAdmin() {
+        const pass = prompt('รหัสผ่านแอดมิน:');
+        if (pass === 'admin123') {
+            showPage('admin-page');
+            loadAdminProducts();
+        } else {
+            alert('รหัสผิดครับ!');
+        }
+        closeMenu();
+    }
+
+    function loadAdminProducts() {
+        const container = document.getElementById('admin-products');
+        container.innerHTML = '';
+        products.forEach(p => {
+            const div = document.createElement('div');
+            div.style = 'background:rgba(255,255,255,0.1); padding:15px; margin:10px 0; border-radius:10px;';
+            div.innerHTML = `
+                <img src="${p.image}" style="width:100px; border-radius:10px;"><br>
+                ชื่อ: <input type="text" value="${p.name}" onchange="updateProduct(${p.id}, 'name', this.value)"><br>
+                ราคา: <input type="number" value="${p.price}" onchange="updateProduct(${p.id}, 'price', parseInt(this.value))"><br>
+                เปลี่ยนรูป: <input type="file" accept="image/*" onchange="uploadProductImage(${p.id}, this.files[0])"><br>
+                <button onclick="deleteProduct(${p.id})" style="background:#cc0000;">ลบสินค้า</button><hr>
+            `;
+            container.appendChild(div);
+        });
+        document.getElementById('shop-logo-preview').src = shopInfo.logo;
+        document.getElementById('qr-preview').src = shopInfo.qr;
+        document.getElementById('bank-number').value = shopInfo.bankNumber || '';
+        document.getElementById('bank-owner').value = shopInfo.bankOwner || '';
+        document.getElementById('bank-name').value = shopInfo.bankName || '';
+    }
+
+    function updateProduct(id, field, value) {
+        const p = products.find(pr => pr.id === id);
+        if (p) p[field] = value;
+        saveProducts();
+        loadProducts();
+    }
+
+    function uploadProductImage(id, file) {
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const p = products.find(pr => pr.id === id);
+            if (p) p.image = e.target.result;
+            saveProducts();
+            loadProducts();
+            loadAdminProducts();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function addProduct() {
+        const newId = products.length ? Math.max(...products.map(p => p.id)) + 1 : 1;
+        products.push({id: newId, name: 'สินค้าใหม่', price: 100, image: 'https://via.placeholder.com/300/ff0000/000000?text=ใหม่'});
+        saveProducts();
+        loadProducts();
+        loadAdminProducts();
+    }
+
+    function deleteProduct(id) {
+        if (confirm('ลบจริง ๆ ?')) {
+            products = products.filter(p => p.id !== id);
+            delete cart[id];
+            saveProducts();
+            localStorage.setItem('cart', JSON.stringify(cart));
+            loadProducts();
+            loadAdminProducts();
+            updateCartBadge();
+        }
+    }
+
+    function saveProducts() {
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    function readFilePreview(e, previewId) {
+        if (e.target.files[0]) {
+            const reader = new FileReader();
+            reader.onload = ev => document.getElementById(previewId).src = ev.target.result;
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    }
+
+    document.getElementById('shop-logo-input').onchange = e => readFilePreview(e, 'shop-logo-preview');
+    document.getElementById('qr-input').onchange = e => readFilePreview(e, 'qr-preview');
+
+    function saveShopLogo() {
+        shopInfo.logo = document.getElementById('shop-logo-preview').src;
+        saveShopInfo();
+        document.getElementById('shop-logo').src = shopInfo.logo;
+    }
+
+    function saveQR() {
+        shopInfo.qr = document.getElementById('qr-preview').src;
+        saveShopInfo();
+        document.getElementById('shop-qr').src = shopInfo.qr;
+    }
+
+    function saveBank() {
+        shopInfo.bankNumber = document.getElementById('bank-number').value.trim();
+        shopInfo.bankOwner = document.getElementById('bank-owner').value.trim();
+        shopInfo.bankName = document.getElementById('bank-name').value.trim();
+        saveShopInfo();
+        updateBankDisplay();
+    }
+
+    function saveShopInfo() {
+        localStorage.setItem('shopInfo', JSON.stringify(shopInfo));
+    }
+
+    // Event listeners
+    document.getElementById('hamburger').onclick = () => document.getElementById('menu').classList.toggle('show');
+    document.getElementById('cart-icon').onclick = showCart;
+
+    // เริ่มต้น
+    updateCartBadge();
+    loadProducts();
+    updateBankDisplay();
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+body { margin: 0; font-family: 'Kanit', sans-serif; background: linear-gradient(to bottom, #000, #330000); color: #fff; min-height: 100vh; overflow-x: hidden; }
+header { background: #000; padding: 15px; display: flex; justify-content: space-around; align-items: center; position: fixed; top: 0; width: 100%; z-index: 1000; box-shadow: 0 4px 20px rgba(255,0,0,0.7); }
+#shop-logo { height: 60px; width: 60px; border-radius: 50%; border: 3px solid #ff0000; object-fit: cover; }
+#hamburger { font-size: 35px; cursor: pointer; }
+#cart-icon { font-size: 35px; cursor: pointer; position: relative; }
+#cart-badge { position: absolute; top: -10px; right: -10px; background: #ff0000; color: #fff; border-radius: 50%; padding: 5px 10px; font-size: 14px; font-weight: bold; }
+#menu { position: fixed; top: 70px; left: -280px; width: 280px; height: calc(100% - 70px); background: rgba(0,0,0,0.95); transition: left 0.3s; z-index: 999; padding: 20px; box-shadow: 5px 0 15px rgba(255,0,0,0.6); }
+#menu.show { left: 0; }
+#menu ul { list-style: none; padding: 0; margin: 0; }
+#menu li { padding: 20px; border-bottom: 1px solid #ff0000; cursor: pointer; font-size: 18px; transition: 0.3s; }
+#menu li:hover { background: rgba(255,0,0,0.3); }
+.page { display: none; padding: 90px 20px 20px; }
+.page.active { display: block; }
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; padding: 0 10px; }
+.product-card { background: rgba(255,255,255,0.1); border-radius: 15px; overflow: hidden; text-align: center; box-shadow: 0 5px 15px rgba(255,0,0,0.5); transition: 0.3s; }
+.product-card:hover { transform: translateY(-10px); box-shadow: 0 10px 25px rgba(255,0,0,0.7); }
+.product-card img { width: 100%; height: 160px; object-fit: cover; }
+.product-card h3 { margin: 10px; font-size: 18px; }
+.product-card p { color: #ff6666; font-weight: bold; }
+.product-card input[type="checkbox"] { transform: scale(1.5); margin: 10px; }
+.product-card input[type="number"] { width: 60px; padding: 8px; border-radius: 5px; border: none; background: #333; color: #fff; }
+.modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; justify-content: center; align-items: center; z-index: 1001; padding: 10px; box-sizing: border-box; }
+.modal.show { display: flex; }
+.modal-content { background: #111; padding: 30px; border-radius: 15px; width: 90%; max-width: 500px; border: 3px solid #ff0000; text-align: center; }
+button { background: #ff0000; color: #fff; border: none; padding: 12px 25px; margin: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+button:hover { background: #cc0000; }
+.btn-add { background: #ff0000; padding: 15px 30px; font-size: 18px; }
+.btn-full { width: 100%; padding: 15px; font-size: 18px; }
+input, textarea { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #333; color: #fff; box-sizing: border-box; }
+#qr-section img { width: 80%; max-width: 250px; margin: 20px 0; border: 3px solid #ff0000; border-radius: 10px; }
+.title-center { text-align:center; font-size:28px; text-shadow: 0 0 10px red; }
+.divider { border-color:#ff0000; }
+.preview-img { width:120px; margin:10px; border-radius:50%; border:3px solid red; }
+.payment-container { text-align:left; max-width:400px; margin:0 auto; padding: 0 10px; }
+.total-text { font-size:20px; }
+.price-highlight { color:#ff0000; }
+.success-title { color:#00ff00; }
+.order-highlight { color:#ff0000; font-size:24px; }
+.btn-copy { background: #ff0000; color: #fff; border: none; padding: 8px 15px; margin-left: 15px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; transition: 0.3s; }
+.btn-copy:hover { background: #cc0000; }
+#bank-details p { margin: 15px 0; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header { padding: 10px; }
+    #shop-logo { height: 50px; width: 50px; }
+    #hamburger, #cart-icon { font-size: 30px; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+    .product-card img { height: 120px; }
+    .product-card h3 { font-size: 16px; }
+    .product-card input[type="number"] { width: 50px; padding: 6px; }
+    .modal-content { padding: 20px; width: 95%; }
+    button { padding: 10px 20px; font-size: 16px; }
+    .btn-add, .btn-full { padding: 12px; font-size: 16px; }
+    .title-center { font-size: 24px; }
+    #menu { width: 250px; top: 60px; height: calc(100% - 60px); }
+    #menu li { padding: 15px; font-size: 16px; }
+    input, textarea { padding: 10px; font-size: 16px; }
+    .payment-container { max-width: 100%; padding: 0 15px; }
+}
